@@ -21,7 +21,7 @@ type Coord struct {
 	Y float64
 }
 
-const PINS = 300
+const PINS = 280 //2x+2y
 const MIN_DISTANCE = 30
 const MAX_LINES = 4000
 const LINE_WEIGHT = 8
@@ -96,12 +96,33 @@ func rgbaToPixel(r uint32, g uint32, b uint32, a uint32) float64 {
 func calculatePinCoords() {
 	pin_coords := [PINS]Coord{}
 
-	center := float64(IMG_SIZE / 2)
-	radius := float64(IMG_SIZE/2 - 1)
+	L1 := 80
+	L2 := 60
+	N1 := 80
+	N2 := 60
+	dL1 := float64(L1/N1)
+	dL2 = float64(L2/N2)
+	//center := float64(IMG_SIZE / 2)
+	//radius := float64(IMG_SIZE/2 - 1)
 
 	for i:=0;i<PINS;i++ {
-		angle := 2 * math.Pi * float64(i) / float64(PINS)
-		pin_coords[i] = Coord{X : math.Floor(center + radius*math.Cos(angle)), Y : math.Floor(center + radius*math.Sin(angle))}
+		//angle := 2 * math.Pi * float64(i) / float64(PINS)
+		if i < 81 {
+			pin_coords[i] = Coord{X : dL1*(i + 1), Y : 0}
+			continue;
+		}
+		if i < 141 {
+			pin_coords[i] = Coord{X : L1 , Y : dL2*(i+1)}
+			continue;
+		}
+		if i < 221 {
+			pin_coords[i] = Coord{X : L1-dL1*(i+1) , Y : L2}
+			continue;
+		}
+		if i < 281 {
+			pin_coords[i] = Coord{X : 0 , Y : L2-dL2*(i+1)}
+			continue;
+		}
 	}
 
 	Pin_coords = pin_coords[:]
